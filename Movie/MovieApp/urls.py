@@ -1,8 +1,10 @@
-
-
 from django.urls import path
-
+from django.contrib.auth.views import LoginView , LogoutView
+from .views import Register , MovieListView
 
 urlpatterns = [
-    path(),
-] 
+    path("register/", Register.as_view() , name= "register" ),
+    path("login/", LoginView.as_view(template_name="MovieApp/login.html"), name="login"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("",MovieListView.as_view(),name="list-movies")
+]
