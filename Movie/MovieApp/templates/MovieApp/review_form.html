@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Movies</title>
+    <title>Leave a Review</title>
     <link rel="stylesheet" href="{% static 'MovieApp/style.css' %}">
 </head>
 <body>
@@ -24,23 +24,17 @@
             </nav>
         </div>
     </header>
-    <div class="movie-list-page">
-        <h1 class="page-heading">All Movies</h1>
-        <div class="movie-grid">
-            {% for movie in movies %}
-            <div class="movie-card">
-                {% if movie.poster %}
-                    <img src="{{ movie.poster.url }}" alt="{{ movie.name }} poster">
-                {% else %}
-                    <img src="{% static 'MovieApp/no-poster.png' %}" alt="no poster">
-                {% endif %}
-                <h3><a href="{% url 'movie-detail' movie.pk %}">{{ movie.name }}</a></h3>
-                <p>{{ movie.release_date }} • {{ movie.duration }}</p>
-                <p>{{ movie.story_line|truncatechars:120 }}</p>
-            </div>
-            {% empty %}
-            <p>No movies found.</p>
-            {% endfor %}
+
+    <div class="movie-detail-page container">
+        <div class="comment-form" style="max-width: 600px; margin: 32px auto;">
+            <h3>Leave a Review</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div style="margin-top:16px;">
+                    <button type="submit" class="btn">Submit Review</button>
+                </div>
+            </form>
         </div>
     </div>
 </body>

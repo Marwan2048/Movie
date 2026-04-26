@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ movie.name }}</title>
+    <link rel="stylesheet" href="{% static 'MovieApp/style.css' %}">
+
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h2 class="site-title">Movies</h2>
+            <nav class="site-nav">
+                {% if user.is_authenticated %}
+                        <span class="greet">Hi, {{ user.username }}</span>
+                        <form method="post" action="{% url 'logout' %}" class="logout-form" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn small">Logout</button>
+                        </form>
+                    {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <div class="movie-detail-page container">
+        <div class="movie-detail">
+            <div class="movie-poster">
+                {% if movie.poster %}
+                    <img src="{{ movie.poster.url }}" alt="{{ movie.name }} poster">
+                {% else %}
+                    <img src="{% static 'MovieApp/no-poster.png' %}" alt="no poster">
+                {% endif %}
+            </div>
+            <div class="movie-info">
+                <h1>{{ movie.name }}</h1>
+                <p><strong>Release:</strong> {{ movie.release_date }} &nbsp; • &nbsp; <strong>Duration:</strong> {{ movie.duration }}</p>
+                <div class="genres">
+                    {% for g in movie.genre.all %}
+                        <span class="genre-tag">{{ g.name }}</span>
+                    {% empty %}
+                        <span class="genre-tag">No genres</span>
+                    {% endfor %}
+                </div>
+                <h3>Overview</h3>
+                <p class="overview">{{ movie.story_line }}</p>
+            </div>
+        </div>
+
+        <div class="reviews">
+            <h2>Reviews</h2>
+
+            <div style="text-align: center; margin-bottom: 24px;">
+                <a href="{% url 'create-review' %}?movie={{ movie.pk }}" class="btn">Leave a Review</a>
+            </div>
+
+            <div class="reviews-list">
+                {% for review in reviews %}
+                <div class="review">
+                    <div class="review-header">
+                        <div class="user-info">
+                            <strong>{% if review.user %}{{ review.user.username }}{% else %}Anonymous{% endif %}</strong>
+                            <small>{{ review.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <div class="rating">
+                            {% if review.rating == '5' %}★★★★★{% elif review.rating == '4' %}★★★★☆{% elif review.rating == '3' %}★★★☆☆{% elif review.rating == '2' %}★★☆☆☆{% elif review.rating == '1' %}★☆☆☆☆{% else %}—{% endif %}
+                        </div>
+                    </div>
+                    {% if review.comment %}
+                        <p>{{ review.comment }}</p>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="empty">No reviews yet. Be the first to review this movie.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
