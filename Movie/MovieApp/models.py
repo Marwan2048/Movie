@@ -35,11 +35,17 @@ class Review(models.Model):
               (4 , "4"),
               (5 , "5")]
 
-    user = models.OneToOneField(User , on_delete = models.CASCADE)
+    user = models.ForeignKey(User , on_delete = models.CASCADE)
     movie = models.ForeignKey(Movie , on_delete = models.CASCADE)
     comment = models.TextField( null= True , blank = True)
-    rating = models.CharField(max_length= 1 , choices= Rating)
+    rating = models.IntegerField(choices= Rating)
     created_at = models.DateTimeField(auto_now_add = True , blank = True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.user} : {self.rating}"
 
 
 

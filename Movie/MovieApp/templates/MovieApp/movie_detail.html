@@ -53,10 +53,6 @@
         <div class="reviews">
             <h2>Reviews</h2>
 
-            <div style="text-align: center; margin-bottom: 24px;">
-                <a href="{% url 'create-review' %}?movie={{ movie.pk }}" class="btn">Leave a Review</a>
-            </div>
-
             <div class="reviews-list">
                 {% for review in reviews %}
                 <div class="review">
@@ -66,7 +62,7 @@
                             <small>{{ review.created_at|date:"M d, Y" }}</small>
                         </div>
                         <div class="rating">
-                            {% if review.rating == '5' %}★★★★★{% elif review.rating == '4' %}★★★★☆{% elif review.rating == '3' %}★★★☆☆{% elif review.rating == '2' %}★★☆☆☆{% elif review.rating == '1' %}★☆☆☆☆{% else %}—{% endif %}
+                            {% if review.rating == 5 %}★★★★★{% elif review.rating == 4 %}★★★★☆{% elif review.rating == 3 %}★★★☆☆{% elif review.rating == 2 %}★★☆☆☆{% elif review.rating == 1 %}★☆☆☆☆{% else %}—{% endif %}
                         </div>
                     </div>
                     {% if review.comment %}
@@ -77,6 +73,23 @@
                 <p class="empty">No reviews yet. Be the first to review this movie.</p>
                 {% endfor %}
             </div>
+
+            {% if user.is_authenticated %}
+            <div class="comment-form" style="max-width: 600px; margin: 32px auto;">
+                <h3>Leave a Review</h3>
+                <form method="post" action="{% url 'create-review' movie.pk %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div style="margin-top:16px;">
+                        <button type="submit" class="btn">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div style="text-align: center; margin: 32px 0;">
+                <p><a href="{% url 'login' %}">Login</a> to leave a review</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 </body>

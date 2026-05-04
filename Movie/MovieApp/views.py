@@ -1,10 +1,10 @@
-from django.shortcuts import render 
 from django.contrib.auth.forms import UserCreationForm
 from .forms import RegisterForm , CreateReviewForm
 from django.views.generic import CreateView , ListView , DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .models import Movie  , Genre , Review
+from django.shortcuts import redirect
 
 
 class Register(CreateView):
@@ -30,18 +30,25 @@ class MovieDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         movie_id = self.kwargs["pk"]
         context["reviews"] = Review.objects.filter(movie__id = movie_id)
+        context["form"] = CreateReviewForm()
         return context
-        
+    
 
-class ReviewCreateView(LoginRequiredMixin ,CreateView):
-    model = Review
+class CreateReview(LoginRequiredMixin , CreateView):
+    template_name = "MovieApp/create_review.html"
     form_class = CreateReviewForm
-    template_name = "MovieApp/review_form.html"
-    context_object_name = "review"
+    model = Review
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.movie = Movie.objects.get(id = self.kwargs["pk"])
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy("movie-detail", kwargs = {"pk":self.object.movie.id})
 
 
+        
+    
 
-
-
-
-
+    

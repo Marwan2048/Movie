@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Review {{ movie.name }}</title>
+    <link rel="stylesheet" href="{% static 'MovieApp/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h2 class="site-title">Movies</h2>
+            <nav class="site-nav">
+                {% if user.is_authenticated %}
+                    <span class="greet">Hi, {{ user.username }}</span>
+                    <form method="post" action="{% url 'logout' %}" class="logout-form" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn small">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 640px; margin: 40px auto;">
+        <h1>Review: {{ movie.name }}</h1>
+        <p>Leave your review for <strong>{{ movie.name }}</strong>.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div style="margin-top:16px;">
+                <button type="submit" class="btn">Submit Review</button>
+            </div>
+        </form>
+
+        <div style="margin-top: 24px;">
+            <a href="{% url 'movie-detail' movie.pk %}" class="btn small">Back to movie</a>
+        </div>
+    </main>
+</body>
+</html>
