@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User 
+from django.core.validators import MinValueValidator
 # Create your models here.
 
 
@@ -18,9 +19,16 @@ class Movie(models.Model):
     name = models.CharField(max_length = 100)
     story_line = models.TextField()
     release_date = models.DateField()
-    duration = models.CharField(max_length=10)
+    duration = models.PositiveIntegerField(validators = [MinValueValidator(1)])
     poster = models.ImageField(upload_to="images/")
 
+    @property
+    def duration_format(self):
+        duration = int(self.duration)
+        hours = self.duration // 60
+        minutes = self.duration % 60
+
+        return f"{hours}h:{minutes:02d}m"
 
     def __str__(self):
         return self.name

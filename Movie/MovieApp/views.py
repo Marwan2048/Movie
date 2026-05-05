@@ -17,11 +17,43 @@ class MovieListView(ListView):
     model = Movie
     template_name = "MovieApp/movie_list.html"
     context_object_name = "movies"
-    paginate_by = 16
+    paginate_by = 15
+
+    def get_queryset(self):
+        
+        # search for movie
+        q = self.request.GET.get("q")
+
+        # sort movie by duration or release_date
+        sort_list = ["duration" , "-duration" , "release_date" , "-release_date"]
+        sort = self.request.GET.get("sort")
+
+        #filter by Genre
+        filter = self.request.GET.get("genre")
+
+        queryset = Movie.objects.all()
+
+        if q:
+            queryset = queryset.filter(name__icontains = q)
+        
+        if sort in sort_list:
+            queryset = queryset.order_by(sort)
+
+        if filter:
+            queryset = queryset.filter(genre__name = filter)
+        
+        return queryset
+    
+
+
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        context["genres"] = Genre.objects.all()
+        return context
+        
 
 
 class MovieDetailView(DetailView):
-
     model = Movie
     template_name = "MovieApp/movie_detail.html"
     context_object_name = "movie"

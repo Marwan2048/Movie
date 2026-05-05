@@ -37,7 +37,7 @@
             </div>
             <div class="movie-info">
                 <h1>{{ movie.name }}</h1>
-                <p><strong>Release:</strong> {{ movie.release_date }} &nbsp; • &nbsp; <strong>Duration:</strong> {{ movie.duration }}</p>
+                <p><strong>Release:</strong> {{ movie.release_date }} &nbsp; • &nbsp; <strong>Duration:</strong> {{ movie.duration_format }}</p>
                 <div class="genres">
                     {% for g in movie.genre.all %}
                         <span class="genre-tag">{{ g.name }}</span>
