@@ -14,6 +14,7 @@
             <nav class="site-nav">
                 {% if user.is_authenticated %}
                         <span class="greet">Hi, {{ user.username }}</span>
+                        <a href="{% url 'watchlist' %}">My Watchlist</a>
                         <form method="post" action="{% url 'logout' %}" class="logout-form" style="display:inline;">
                             {% csrf_token %}
                             <button type="submit" class="btn small">Logout</button>
@@ -47,6 +48,16 @@
                 </div>
                 <h3>Overview</h3>
                 <p class="overview">{{ movie.story_line }}</p>
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'add-to-watchlist' movie.pk %}" style="margin-top: 16px;">
+                    {% csrf_token %}
+                    {% if in_watchlist %}
+                        <button type="submit" class="btn">Remove from Watchlist</button>
+                    {% else %}
+                        <button type="submit" class="btn">Add to Watchlist</button>
+                    {% endif %}
+                </form>
+                {% endif %}
             </div>
         </div>
 
@@ -59,7 +70,7 @@
                     <div class="review-header">
                         <div class="user-info">
                             <strong>{% if review.user %}{{ review.user.username }}{% else %}Anonymous{% endif %}</strong>
-                            <small>{{ review.created_at|date:"M d, Y" }}</small>
+                            <small>{{ review.created_at}}</small>
                         </div>
                         <div class="rating">
                             {% if review.rating == 5 %}★★★★★{% elif review.rating == 4 %}★★★★☆{% elif review.rating == 3 %}★★★☆☆{% elif review.rating == 2 %}★★☆☆☆{% elif review.rating == 1 %}★☆☆☆☆{% else %}—{% endif %}

@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>My Watchlist</title>
+    <link rel="stylesheet" href="{% static 'MovieApp/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h2 class="site-title">Movies</h2>
+            <nav class="site-nav">
+                {% if user.is_authenticated %}
+                        <span class="greet">Hi, {{ user.username }}</span>
+                        <a href="{% url 'watchlist' %}">My Watchlist</a>
+                        <form method="post" action="{% url 'logout' %}" class="logout-form" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn small">Logout</button>
+                        </form>
+                    {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>My Watchlist</h1>
+        {% for watchlist_item in watchlist %}
+            {% for movie in watchlist_item.movie.all %}
+                <div class="movie-item">
+                    <h2><a href="{% url 'movie-detail' movie.pk %}">{{ movie.name }}</a></h2>
+                    <p>{{ movie.story_line|truncatechars:100 }}</p>
+                    <p>Release: {{ movie.release_date }} | Duration: {{ movie.duration_format }}</p>
+                    <form method="post" action="{% url 'add-to-watchlist' movie.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn small">Remove from Watchlist</button>
+                    </form>
+                </div>
+            {% empty %}
+                <p>No movies in your watchlist yet.</p>
+            {% endfor %}
+        {% empty %}
+            <p>No watchlist found.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

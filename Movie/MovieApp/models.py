@@ -44,7 +44,7 @@ class Review(models.Model):
               (5 , "5")]
 
     user = models.ForeignKey(User , on_delete = models.CASCADE)
-    movie = models.ForeignKey(Movie , on_delete = models.CASCADE)
+    movie = models.ForeignKey(Movie , on_delete = models.CASCADE , related_name= "reviews")
     comment = models.TextField( null= True , blank = True)
     rating = models.IntegerField(choices= Rating)
     created_at = models.DateTimeField(auto_now_add = True , blank = True)
@@ -60,3 +60,7 @@ class Review(models.Model):
 class Watchlist(models.Model):
     user = models.OneToOneField(User , on_delete=models.CASCADE)
     movie = models.ManyToManyField(Movie)
+
+    def __str__(self):
+        movies_list = ", ".join([m.name for m in self.movie.all()])
+        return f"{self.user.username} - {movies_list if movies_list else 'No movies'}"

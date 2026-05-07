@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView , LogoutView
-from .views import Register , MovieListView , MovieDetailView , CreateReview
+from .views import Register , MovieListView , MovieDetailView , CreateReview , WatchlistAddMovie, WatchlistView
 
 urlpatterns = [
     path("register/", Register.as_view() , name= "register" ),
@@ -8,6 +8,7 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     path("",MovieListView.as_view(),name="list-movies"),
     path("movies/<int:pk>/", MovieDetailView.as_view(), name="movie-detail"),
-    path("movies/<int:pk>/review/", CreateReview.as_view(), name="create-review")
-
+    path("movies/<int:pk>/review/", CreateReview.as_view(), name="create-review"),
+    path("movies/<int:pk>/watchlist/" , WatchlistAddMovie.as_view() , name = "add-to-watchlist"),
+    path("watchlist/", WatchlistView.as_view(), name="watchlist")
 ]
