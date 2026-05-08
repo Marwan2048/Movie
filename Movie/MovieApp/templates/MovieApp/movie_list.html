@@ -38,6 +38,8 @@
                     <option value="-release_date" {% if request.GET.sort == "-release_date" %}selected{% endif %}>Release Date (Newest)</option>
                     <option value="duration" {% if request.GET.sort == "duration" %}selected{% endif %}>Duration (Shortest)</option>
                     <option value="-duration" {% if request.GET.sort == "-duration" %}selected{% endif %}>Duration (Longest)</option>
+                    <option value="-avg_rating" {% if request.GET.sort == "-avg_rating" %}selected{% endif %}>Rating (Highest)</option>
+
                 </select>
                 <button type="submit">Search</button>
             </form>
@@ -64,6 +66,28 @@
             </div>
             {% empty %}
             <p>No movies found.</p>
+            {% endfor %}
+        </div>
+
+        <h2>Top 10 Movies (Last 7 Days)</h2>
+        <div class="movie-grid">
+            {% for movie in top_10_movies %}
+            <div class="movie-card">
+                {% if movie.poster %}
+                    <img src="{{ movie.poster.url }}" alt="{{ movie.name }} poster">
+                {% else %}
+                    <img src="{% static 'MovieApp/no-poster.png' %}" alt="no poster">
+                {% endif %}
+                <h3><a href="{% url 'movie-detail' movie.pk %}">{{ movie.name }}</a></h3>
+                <br>
+                <p>{{ movie.release_date }} • {{ movie.duration_format }}</p>   
+                  <br>           
+                <p>Average Rating: {{ movie.avg_rating | floatformat:1 }}</p>     
+                <br>           
+                <p>{{ movie.story_line|truncatechars:120 }}</p>
+            </div>
+            {% empty %}
+            <p>No top movies found for the last 7 days.</p>
             {% endfor %}
         </div>
     </div>

@@ -5,8 +5,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .models import Movie  , Genre , Review , Watchlist
 from django.db.models.aggregates import Avg
+from django.db.models import Q
 from django.views import View
 from django.shortcuts import redirect, get_object_or_404
+from django.utils import timezone 
+from datetime import timedelta
 
 class Register(CreateView):
     form_class = RegisterForm
@@ -20,33 +23,37 @@ class MovieListView(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        
         # search for movie
         q = self.request.GET.get("q")
-
         # sort movie by duration or release_date
-        sort_list = ["duration" , "-duration" , "release_date" , "-release_date"]
+        sort_list = ["duration" , "-duration" , "release_date" , "-release_date", "-avg_rating"]
         sort = self.request.GET.get("sort")
-
         #filter by Genre
         genre = self.request.GET.get("genre")
-
         queryset = Movie.objects.all()
         if q:
             queryset = queryset.filter(name__icontains = q)
         
-        if sort in sort_list:
-            queryset = queryset.order_by(sort)
-
         if genre:
             queryset = queryset.filter(genre__name = genre)
         
         queryset = queryset.annotate(avg_rating=Avg("reviews__rating", default=0))
+
+        if sort in sort_list:
+            queryset = queryset.order_by(sort)
+
         return queryset
 
     def get_context_data(self, **kwargs):
+        last_7_days = timezone.now() - timedelta(days=7)
         context =  super().get_context_data(**kwargs)
         context["genres"] = Genre.objects.all()
+        context["top_10_movies"] = Movie.objects.annotate(
+        avg_rating=Avg("reviews__rating",
+        filter=Q(reviews__created_at__gte=last_7_days)
+            )
+            ).order_by("-avg_rating")[:10]
+        context["rating"] =  Movie.objects.annotate(avg_rating = Avg("reviews__rating"))
         return context
         
 class MovieDetailView(DetailView):
