@@ -14,7 +14,7 @@
             <nav class="site-nav">
                 {% if user.is_authenticated %}
                         <span class="greet">Hi, {{ user.username }}</span>
-                        <a href="{% url 'watchlist' %}">My Watchlist</a>
+                        <a href="{% url 'watchlist' %}" class="btn small">My Watchlist</a>
                         <form method="post" action="{% url 'logout' %}" class="logout-form" style="display:inline;">
                             {% csrf_token %}
                             <button type="submit" class="btn small">Logout</button>
@@ -51,11 +51,7 @@
                 {% if user.is_authenticated %}
                 <form method="post" action="{% url 'add-to-watchlist' movie.pk %}" style="margin-top: 16px;">
                     {% csrf_token %}
-                    {% if in_watchlist %}
-                        <button type="submit" class="btn">Remove from Watchlist</button>
-                    {% else %}
-                        <button type="submit" class="btn">Add to Watchlist</button>
-                    {% endif %}
+                    <button type="submit" class="btn small">{% if in_watchlist %}Remove from Watchlist{% else %}Add to Watchlist{% endif %}</button>
                 </form>
                 {% endif %}
             </div>
@@ -73,7 +69,9 @@
                             <small>{{ review.created_at}}</small>
                         </div>
                         <div class="rating">
-                            {% if review.rating == 5 %}★★★★★{% elif review.rating == 4 %}★★★★☆{% elif review.rating == 3 %}★★★☆☆{% elif review.rating == 2 %}★★☆☆☆{% elif review.rating == 1 %}★☆☆☆☆{% else %}—{% endif %}
+                            {% for _ in "12345" %}
+                                <span class="star {% if forloop.counter <= review.rating %}filled{% endif %}">★</span>
+                            {% endfor %}
                         </div>
                     </div>
                     {% if review.comment %}

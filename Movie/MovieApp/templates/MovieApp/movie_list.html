@@ -9,41 +9,45 @@
 <body>
     <header class="site-header">
         <div class="container">
-            <h2 class="site-title">Movies</h2>
-            <nav class="site-nav">
+            <div class="header-brand">
+                <h2 class="site-title">Movies</h2>
+            </div>
+
+            <div class="header-search">
+                <form method="get" class="search-form">
+                    <input type="text" name="q" placeholder="Search movies..." value="{{ request.GET.q }}">
+                    <select name="genre" onchange="this.form.submit()">
+                        <option value="">All Genres</option>
+                        {% for genre in genres %}
+                            <option value="{{ genre.name }}" {% if request.GET.genre == genre.name %}selected{% endif %}>{{ genre.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="sort" onchange="this.form.submit()">
+                        <option value="">Sort by...</option>
+                        <option value="release_date" {% if request.GET.sort == "release_date" %}selected{% endif %}>Release Date (Oldest)</option>
+                        <option value="-release_date" {% if request.GET.sort == "-release_date" %}selected{% endif %}>Release Date (Newest)</option>
+                        <option value="duration" {% if request.GET.sort == "duration" %}selected{% endif %}>Duration (Shortest)</option>
+                        <option value="-duration" {% if request.GET.sort == "-duration" %}selected{% endif %}>Duration (Longest)</option>
+                        <option value="-avg_rating" {% if request.GET.sort == "-avg_rating" %}selected{% endif %}>Rating (Highest)</option>
+                        <option value="avg_rating" {% if request.GET.sort == "avg_rating" %}selected{% endif %}>Rating (Lowest)</option>
+                    </select>
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+
+            <div class="header-actions">
                 {% if user.is_authenticated %}
-                        <span class="greet">Hi, {{ user.username }}</span>
-                        <a href="{% url 'watchlist' %}">My Watchlist</a>
-                        <form method="post" action="{% url 'logout' %}" class="logout-form" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn small">Logout</button>
-                        </form>
-                    {% else %}
-                    <a href="{% url 'login' %}">Login</a>
-                    <a href="{% url 'register' %}">Register</a>
+                    <span class="greet">Hi, {{ user.username }}</span>
+                    <a href="{% url 'watchlist' %}" class="btn small">My Watchlist</a>
+                    <form method="post" action="{% url 'logout' %}" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn small">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                    <a href="{% url 'register' %}" class="nav-link">Register</a>
                 {% endif %}
-            </nav>
-
-            <form method="get" class="search-form">
-                <input type="text" name="q" placeholder="Search movies..." value="{{ request.GET.q }}">
-                <select name="genre">
-                    <option value="">All Genres</option>
-                    {% for genre in genres %}
-                        <option value="{{ genre.name }}" {% if request.GET.genre == genre.name %}selected{% endif %}>{{ genre.name }}</option>
-                    {% endfor %}
-                </select>
-                <select name="sort">
-                    <option value="">Sort by...</option>
-                    <option value="release_date" {% if request.GET.sort == "release_date" %}selected{% endif %}>Release Date (Oldest)</option>
-                    <option value="-release_date" {% if request.GET.sort == "-release_date" %}selected{% endif %}>Release Date (Newest)</option>
-                    <option value="duration" {% if request.GET.sort == "duration" %}selected{% endif %}>Duration (Shortest)</option>
-                    <option value="-duration" {% if request.GET.sort == "-duration" %}selected{% endif %}>Duration (Longest)</option>
-                    <option value="-avg_rating" {% if request.GET.sort == "-avg_rating" %}selected{% endif %}>Rating (Highest)</option>
-
-                </select>
-                <button type="submit">Search</button>
-            </form>
-
+            </div>
         </div>
     </header>
     <div class="movie-list-page">
@@ -57,12 +61,12 @@
                     <img src="{% static 'MovieApp/no-poster.png' %}" alt="no poster">
                 {% endif %}
                 <h3><a href="{% url 'movie-detail' movie.pk %}">{{ movie.name }}</a></h3>
-                <br>
-                <p>{{ movie.release_date }} • {{ movie.duration_format }}</p>   
-                  <br>           
-                <p>Average Rating: {{ movie.avg_rating | floatformat:1 }}</p>     
-                <br>           
-                <p>{{ movie.story_line|truncatechars:120 }}</p>
+                <div class="movie-meta">
+                    <span>{{ movie.release_date }}</span>
+                    <span>{{ movie.duration_format }}</span>
+                </div>
+                <p class="movie-rating">★ {{ movie.avg_rating | floatformat:1 }}</p>
+                <p class="movie-card-description">{{ movie.story_line|truncatechars:120 }}</p>
             </div>
             {% empty %}
             <p>No movies found.</p>
@@ -79,12 +83,12 @@
                     <img src="{% static 'MovieApp/no-poster.png' %}" alt="no poster">
                 {% endif %}
                 <h3><a href="{% url 'movie-detail' movie.pk %}">{{ movie.name }}</a></h3>
-                <br>
-                <p>{{ movie.release_date }} • {{ movie.duration_format }}</p>   
-                  <br>           
-                <p>Average Rating: {{ movie.avg_rating | floatformat:1 }}</p>     
-                <br>           
-                <p>{{ movie.story_line|truncatechars:120 }}</p>
+                <div class="movie-meta">
+                    <span>{{ movie.release_date }}</span>
+                    <span>{{ movie.duration_format }}</span>
+                </div>
+                <p class="movie-rating">★ {{ movie.avg_rating | floatformat:1 }}</p>
+                <p class="movie-card-description">{{ movie.story_line|truncatechars:120 }}</p>
             </div>
             {% empty %}
             <p>No top movies found for the last 7 days.</p>
