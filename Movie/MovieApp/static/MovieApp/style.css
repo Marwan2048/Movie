@@ -573,6 +573,11 @@ body {
 }
 
 .reviews-list .empty {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
   text-align: center;
   color: #666;
   font-style: italic;

@@ -7,7 +7,6 @@ from django.core.validators import MinValueValidator
 class Genre(models.Model):
 
     name = models.CharField( max_length = 100 )
-    description = models.TextField()
 
     def __str__(self):
         return self.name
@@ -51,6 +50,7 @@ class Review(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        unique_together = ( "user" , "movie" )
 
     def __str__(self):
         return f"{self.user} : {self.rating}"

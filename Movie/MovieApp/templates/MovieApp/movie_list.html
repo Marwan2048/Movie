@@ -29,7 +29,6 @@
                         <option value="duration" {% if request.GET.sort == "duration" %}selected{% endif %}>Duration (Shortest)</option>
                         <option value="-duration" {% if request.GET.sort == "-duration" %}selected{% endif %}>Duration (Longest)</option>
                         <option value="-avg_rating" {% if request.GET.sort == "-avg_rating" %}selected{% endif %}>Rating (Highest)</option>
-                        <option value="avg_rating" {% if request.GET.sort == "avg_rating" %}selected{% endif %}>Rating (Lowest)</option>
                     </select>
                     <button type="submit">Search</button>
                 </form>

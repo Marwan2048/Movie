@@ -84,16 +84,23 @@
             </div>
 
             {% if user.is_authenticated %}
-            <div class="comment-form" style="max-width: 600px; margin: 32px auto;">
-                <h3>Leave a Review</h3>
-                <form method="post" action="{% url 'create-review' movie.pk %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <div style="margin-top:16px;">
-                        <button type="submit" class="btn">Submit Review</button>
+                {% if has_reviewed %}
+                    <div class="comment-form" style="max-width: 600px; margin: 32px auto; padding: 24px; border: 1px solid #ccc;">
+                        <h3>Your Review Has Been Submitted</h3>
+                        <p>You can only submit one review per movie. Thank you for your feedback.</p>
                     </div>
-                </form>
-            </div>
+                {% else %}
+                    <div class="comment-form" style="max-width: 600px; margin: 32px auto;">
+                        <h3>Leave a Review</h3>
+                        <form method="post" action="{% url 'create-review' movie.pk %}">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div style="margin-top:16px;">
+                                <button type="submit" class="btn">Submit Review</button>
+                            </div>
+                        </form>
+                    </div>
+                {% endif %}
             {% else %}
             <div style="text-align: center; margin: 32px 0;">
                 <p><a href="{% url 'login' %}">Login</a> to leave a review</p>

@@ -31,6 +31,11 @@
 
         <form method="post">
             {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="form-errors" style="color: #c0392b; margin-bottom: 16px;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
             {{ form.as_p }}
             <div style="margin-top:16px;">
                 <button type="submit" class="btn">Submit Review</button>
