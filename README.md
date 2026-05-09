@@ -10,7 +10,7 @@ A Django web application for managing and reviewing movies. Users can browse mov
   - Login required for reviews and watchlist management.
 
 - **Movie Management**:
-  - Browse a paginated list of movies (15 per page).
+  - Browse a paginated list of movies (5 per page).
   - Search movies by name.
   - Sort movies by duration (ascending/descending), release date (ascending/descending), or average rating (descending).
   - Filter movies by genre.
@@ -19,6 +19,7 @@ A Django web application for managing and reviewing movies. Users can browse mov
 
 - **User Reviews**:
   - Authenticated users can create reviews for movies with comments and ratings (1-5 stars).
+  - Each authenticated user may submit only one review per movie.
   - View all reviews for a movie, ordered by creation date (newest first).
   - Display average rating for each movie.
 
